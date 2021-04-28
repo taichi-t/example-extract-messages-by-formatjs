@@ -3,32 +3,32 @@ const preact = require('preact');
 const { transform } = require('@formatjs/ts-transformer');
 
 module.exports = withPrefresh({
+  feature: {
+    webpack5: true,
+  },
   webpack(config, options) {
     const { dev, isServer } = options;
 
     //Install webpack rules
     config.module.rules.push({
-      test: /\.tsx?$/,
-      use: [
-        {
-          loader: 'ts-loader',
-          options: {
-            getCustomTransformers() {
-              return {
-                before: [
-                  transform({
-                    overrideIdFn: '[sha512:contenthash:base64:6]',
-                    extractSourceLocation: true,
-                  }),
-                ],
-              };
-            },
+      test: /\.(tsx|ts)$/,
+      use: {
+        loader: 'ts-loader',
+        options: {
+          getCustomTransformers() {
+            return {
+              before: [
+                transform({ overrideIdFn: '[sha512:contenthash:base64:6]' }),
+              ],
+            };
           },
         },
-      ],
+      },
+
+      exclude: /node_modules/,
     });
 
-    // Move Preact into the framework chunk instead of duplicating in routes:
+    // // Move Preact into the framework chunk instead of duplicating in routes:
     const splitChunks = config.optimization && config.optimization.splitChunks;
     if (splitChunks) {
       const cacheGroups = splitChunks.cacheGroups;

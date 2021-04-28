@@ -32,7 +32,3 @@ yarn-error.log*
 
 # vercel
 .vercel
-
-# translations
-/compiled-lang/
-/lang/
